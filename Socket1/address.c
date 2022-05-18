@@ -4,7 +4,6 @@
 
 int main(){
 	unsigned long address = inet_addr("192.168.0.100");
-	// ntohs 用于转换端口
 	printf("%u\n", ntohl(address)); //点分十进制转换为32位整数
 	
 	struct in_addr ipaddr;
