@@ -8,8 +8,15 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <signal.h>
 
-
+/** 服务端流程
+ * socket函数创建监听套接字listenfd
+ * 为监听套接字listenfd去bind本地的ip及port
+ * 调用listen函数启动监听
+ * 调用accept函数返回一个已连接的套接字 conn
+ * 正常读写数据
+ */
 void err_exit(char * msg)
 {
     do {
@@ -19,13 +26,12 @@ void err_exit(char * msg)
     }while (0);	
 }
 
-/** 服务端流程
- * socket函数创建监听套接字listenfd
- * 为监听套接字listenfd去bind本地的ip及port
- * 调用listen函数启动监听
- * 调用accept函数返回一个已连接的套接字 conn
- * 正常读写数据
- */
+void handler(int sig)
+{
+    printf("recv a singal = %d\n", sig);
+    exit(EXIT_SUCCESS);
+}
+
 int main() 
 {
 	int listenfd;
@@ -63,25 +69,57 @@ int main()
 	// peerlen 一定要有初始值，否则会accept失败
 	socklen_t peerlen = sizeof(peeraddr);
 	// 返回已连接队列的第一个连接
-	int conn;
-	if((conn = accept(listenfd,(struct sockaddr *)&peeraddr, &peerlen))< 0)
-	{
-		err_exit("accept");
-	}
-	char recvbuf[1024];
+    int conn;
+    if((conn = accept(listenfd,(struct sockaddr *)&peeraddr, &peerlen))< 0)
+    {
+        err_exit("accept");
+    }
+    pid_t pid;
+    pid = fork();
+    if (pid == -1)
+    {
+        err_exit("fock");
+    }
+    if (pid == 0) // 子进程发送数据
+    {
+        signal(SIGUSR1, handler);
+        char sendbuf[1024];
+        while (fgets(sendbuf, sizeof(sendbuf), stdin) != NULL)
+        {
+            write(conn, sendbuf, strlen(sendbuf));
+            memset(sendbuf, 0, strlen(sendbuf));
+        }
+        exit(EXIT_SUCCESS);
+        printf("exit after");
+        close(conn);
 
-	while (1)
-	{	
-		memset(recvbuf,0, sizeof(recvbuf));
-		// 从已连接的套接字中读取数据
-		read(conn, recvbuf, sizeof(recvbuf));
-		// 将数据同步到标准输出
-		fputs(recvbuf, stdout);
-		// 将数据回射回已连接的套接字
-		write(conn,recvbuf, strlen(recvbuf));
-		
-	}
-	close(conn);
-	close(listenfd);
+    }
+    else  // 父进程接收数据
+    {
+        char recvbuf[1024];
+        while (1)
+        {
+            int ret = read(conn, recvbuf, sizeof(recvbuf));
+            if (ret == 0)
+            {
+                printf("peer close");
+                break;
+            }
+            if (ret == -1)
+            {
+                err_exit("read");
+            }
+            fputs(recvbuf,stdout);
+        }
+        kill(pid, SIGUSR1);
+        printf("kill after\n");
+        close(conn);
+    } 
+    close(listenfd);
+
 	return 0;
 }
+
+
+
+

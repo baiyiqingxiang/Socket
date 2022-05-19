@@ -9,7 +9,13 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-
+/** 服务端流程
+ * socket函数创建监听套接字listenfd
+ * 为监听套接字listenfd去bind本地的ip及port
+ * 调用listen函数启动监听
+ * 调用accept函数返回一个已连接的套接字 conn
+ * 正常读写数据
+ */
 void err_exit(char * msg)
 {
     do {
@@ -19,13 +25,32 @@ void err_exit(char * msg)
     }while (0);	
 }
 
-/** 服务端流程
- * socket函数创建监听套接字listenfd
- * 为监听套接字listenfd去bind本地的ip及port
- * 调用listen函数启动监听
- * 调用accept函数返回一个已连接的套接字 conn
- * 正常读写数据
- */
+void do_recvservices(int conn)
+{
+    char recvbuf[1024];
+    while (1)
+    {	
+        memset(recvbuf,0, sizeof(recvbuf));
+        // 从已连接的套接字中读取数据
+        size_t res = read(conn, recvbuf, sizeof(recvbuf));
+        if (res == 0)
+        {
+            printf("client close\n");
+            break;
+        }
+        if (res == -1)
+        {
+            err_exit("read fail");
+        }
+        // 将数据同步到标准输出
+        fputs(recvbuf, stdout);
+        // 将数据回射回已连接的套接字
+        write(conn,recvbuf, strlen(recvbuf));
+            
+     }
+
+}
+
 int main() 
 {
 	int listenfd;
@@ -63,25 +88,30 @@ int main()
 	// peerlen 一定要有初始值，否则会accept失败
 	socklen_t peerlen = sizeof(peeraddr);
 	// 返回已连接队列的第一个连接
-	int conn;
-	if((conn = accept(listenfd,(struct sockaddr *)&peeraddr, &peerlen))< 0)
-	{
-		err_exit("accept");
-	}
-	char recvbuf[1024];
-
-	while (1)
-	{	
-		memset(recvbuf,0, sizeof(recvbuf));
-		// 从已连接的套接字中读取数据
-		read(conn, recvbuf, sizeof(recvbuf));
-		// 将数据同步到标准输出
-		fputs(recvbuf, stdout);
-		// 将数据回射回已连接的套接字
-		write(conn,recvbuf, strlen(recvbuf));
-		
-	}
-	close(conn);
-	close(listenfd);
+    pid_t pid;
+    while (1)
+    {
+        int conn;
+        if((conn = accept(listenfd,(struct sockaddr *)&peeraddr, &peerlen))< 0)
+        {
+            err_exit("accept");
+        }
+        pid = fork();
+        if (pid == -1)
+        {
+            err_exit("fock");
+        }
+        if (pid == 0) // 子进程
+        {
+            close(listenfd);
+            do_recvservices(conn);
+            exit(EXIT_SUCCESS);
+        }
+        else 
+        {
+            close(conn);
+        } 
+    }
+    
 	return 0;
 }
