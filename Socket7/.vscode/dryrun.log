@@ -1,0 +1,11 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/hu/桌面/LearnSocket/Socket/Socket7'
+gcc -g -Wall -std=c11   -c -o echosrv2.o echosrv2.c
+gcc -g -Wall -std=c11   -c -o echocli.o echocli.c
+gcc -g -Wall -std=c11   -c -o echocli2.o echocli2.c
+gcc -g -Wall -std=c11   -c -o basicfun.o basicfun.c
+gcc -o echosrv2 echosrv2.o basicfun.o
+gcc -o echocli echocli.o basicfun.o 
+gcc -o echocli2 echocli2.o basicfun.o
+make: Leaving directory '/home/hu/桌面/LearnSocket/Socket/Socket7'
+ 

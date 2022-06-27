@@ -8,7 +8,7 @@ make: *** No rule to make target 'basicfun.o', needed by 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jun 27 22:56:38 2022
+# Make data base, printed on Mon Jun 27 22:57:30 2022
 
 # Variables
 
@@ -17,13 +17,15 @@ GDK_BACKEND = x11
 # environment
 LC_ALL = C
 # environment
+NO_AT_BRIDGE = 1
+# environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
 SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-b4c3d121-8064-465c-92b0-744b14d5037b.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-07e2a783-31f0-432a-8fcd-185063c6ea7f.sock
 # environment
 LC_NAME = zh_CN.UTF-8
 # environment
@@ -43,7 +45,7 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
 .VARIABLES := 
 # environment
-PWD = /home/hu/桌面/LearnSocket/Socket/Socket6
+PWD = /home/hu/桌面/LearnSocket/Socket/Socket7
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
@@ -67,11 +69,11 @@ XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.55NDO1
 # makefile
 MAKEFLAGS = pqrR
 # makefile
-CURDIR := /home/hu/桌面/LearnSocket/Socket/Socket6
+CURDIR := /home/hu/桌面/LearnSocket/Socket/Socket7
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # automatic
@@ -241,7 +243,7 @@ GDMSESSION = ubuntu
 # environment
 LC_IDENTIFICATION = zh_CN.UTF-8
 # variable set hash-table stats:
-# Load=114/1024=11%, Rehash=0, Collisions=5/144=3%
+# Load=115/1024=11%, Rehash=0, Collisions=5/145=3%
 
 # Pattern-specific Variable Values
 
@@ -249,7 +251,7 @@ LC_IDENTIFICATION = zh_CN.UTF-8
 
 # Directories
 
-# . (device 2068, inode 3934027): 10 files, no impossibilities.
+# . (device 2068, inode 3932192): 10 files, no impossibilities.
 
 # 10 files, no impossibilities in 1 directories.
 
@@ -279,7 +281,6 @@ clean:
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 10):
 	$(RM) *.o echosrv2 echocli echocli2
- 
 
 # Not a target:
 .DEFAULT:
@@ -312,7 +313,8 @@ echocli.o: basicfun.h
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-07 22:50:13.006334655
+ 
+#  Last modified 2022-06-07 22:50:13.006334
 #  File has been updated.
 #  Successfully updated.
 
@@ -341,6 +343,6 @@ basicfun.o:
 # strcache performance: lookups = 37 / hit rate = 43%
 # hash-table stats:
 # Load=21/8192=0%, Rehash=0, Collisions=0/37=0%
-# Finished Make data base on Mon Jun 27 22:56:38 2022
+# Finished Make data base on Mon Jun 27 22:57:30 2022
 
  
